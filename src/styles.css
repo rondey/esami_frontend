@@ -4,3 +4,27 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+h1 {
+    font: var(--mat-sys-display-large);
+}
+
+h2 {
+    font: var(--mat-sys-display-medium);
+}
+
+h3 {
+    font: var(--mat-sys-display-small);
+}
+
+h4 {
+    font: var(--mat-sys-headline-large);
+}
+
+h5 {
+    font: var(--mat-sys-headline-medium);
+}
+
+h6 {
+    font: var(--mat-sys-headline-small);
+}

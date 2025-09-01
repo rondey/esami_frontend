@@ -4,10 +4,11 @@ import { FiltersInterface } from './models/filters-interface';
 import { FieldFilterEnum } from './models/field-filter-enum';
 import { PredefinitiFiltriService } from './services/predefiniti-filtri-service';
 import { PredefinitiFiltri } from './models/predefiniti-filtri';
+import { EsamiPanels } from './esami-panels/esami-panels';
 
 @Component({
   selector: 'app-selections',
-  imports: [FiltersPanel],
+  imports: [FiltersPanel, EsamiPanels],
   templateUrl: './selections.html',
   styleUrl: './selections.css',
 })

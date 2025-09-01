@@ -1,0 +1,43 @@
+<div class="mt-4 sm:w-xl">
+  <mat-card appearance="outlined">
+    <mat-card-header>
+      <mat-card-title> Selezione degli esami </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form>
+        <div class="grid grid-cols-1 gap-4">
+          <div class="">
+            <p class="text-center text-lg">Ambulatori</p>
+            <mat-selection-list
+              class="border border-solid rounded-sm max-h-64 overflow-y-auto"
+              [multiple]="false"
+            >
+              <mat-list-option value="item"> Questo è un testo molto grande </mat-list-option>
+            </mat-selection-list>
+          </div>
+          <div class="">
+            <p class="text-center text-lg">Posizioni del corpo</p>
+            <mat-selection-list
+              class="border border-solid rounded-sm max-h-64 overflow-y-auto"
+              [multiple]="false"
+            >
+              <mat-list-option value="item"> item </mat-list-option>
+            </mat-selection-list>
+          </div>
+          <div class="">
+            <p class="text-center text-lg">Esami</p>
+            <mat-selection-list
+              class="border border-solid rounded-sm max-h-64 overflow-y-auto"
+              [multiple]="false"
+            >
+              <mat-list-option value="item"> item </mat-list-option>
+            </mat-selection-list>
+          </div>
+          <div class="text-center col-span-full">
+            <button matButton="tonal" type="submit">Conferma Esame</button>
+          </div>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
