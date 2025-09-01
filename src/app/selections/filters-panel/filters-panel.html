@@ -10,16 +10,20 @@
             <mat-form-field>
               <mat-label>Campo di ricerca</mat-label>
               <mat-select formControlName="selectedField" name="selectedField">
-                <mat-option value="FieldFilter.codiceMinisteriale">Codice ministeriale</mat-option>
-                <mat-option value="FieldFilter.codiceInterno">Codice interno</mat-option>
-                <mat-option value="FieldFilter.descrizioneEsame">Descrizione esame</mat-option>
+                <mat-option [value]="FieldFilterEnum.codiceMinisteriale"
+                  >Codice ministeriale</mat-option
+                >
+                <mat-option [value]="FieldFilterEnum.codiceInterno">Codice interno</mat-option>
+                <mat-option [value]="FieldFilterEnum.descrizioneEsame"
+                  >Descrizione esame</mat-option
+                >
               </mat-select>
             </mat-form-field>
           </div>
           <div class="text-center">
             <mat-form-field>
               <mat-label>Valore</mat-label>
-              <input matInput formControlName="value" name="value" />
+              <input matInput formControlName="valueField" name="valueField" />
             </mat-form-field>
           </div>
           <div class="text-center col-span-full">
