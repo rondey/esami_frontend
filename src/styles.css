@@ -5,6 +5,10 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
+.error {
+    color: var(--mat-sys-error);
+}
+
 h1 {
     font: var(--mat-sys-display-large);
 }

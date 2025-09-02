@@ -24,6 +24,8 @@ export class Selections {
   posizioneId = signal<number>(0);
   esameId = signal<number>(0);
 
+  isLoading = signal<boolean>(true);
+
   ngOnInit() {
     this.predefinitiFiltriService.getPredefinitiFiltri().subscribe({
       next: (predefinitiFiltri: PredefinitiFiltri) => {
@@ -42,6 +44,10 @@ export class Selections {
       },
       error: (error) => {
         console.error(error);
+      },
+      complete: () => {
+        // Even if the default filters are not loaded, the user may want to use anyway the esami panels.
+        this.isLoading.set(false);
       },
     });
   }

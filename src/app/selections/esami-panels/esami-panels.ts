@@ -7,15 +7,18 @@ import { EsamiService } from '../services/esami-service';
 import { EsameInterface } from '../models/esame-interface';
 import { AmbulatorioInterface } from '../models/ambulatorio-interface';
 import { PosizioneInterface } from '../models/posizione-interface';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-esami-panels',
-  imports: [MatCardModule, MatSelectionList, MatListOption, MatButtonModule],
+  imports: [MatCardModule, MatSelectionList, MatListOption, MatButtonModule, ReactiveFormsModule],
   templateUrl: './esami-panels.html',
   styleUrl: './esami-panels.css',
 })
 export class EsamiPanels {
   private esamiService = inject(EsamiService);
+  private formBuilder = inject(FormBuilder);
+
   filters = input.required<FiltersInterface>();
 
   ambulatorioIdDefault = input.required<number>();
@@ -30,12 +33,26 @@ export class EsamiPanels {
   posizioni = signal<PosizioneInterface[]>([]);
   esami = signal<EsameInterface[]>([]);
 
-  // TODO: Define the form
+  esamiForm = this.formBuilder.group({
+    // Id must have a min value of 1
+    ambulatorioId: [0, Validators.required, Validators.min(1)],
+    posizioneId: [0, Validators.required, Validators.min(1)],
+    esameId: [0, Validators.required, Validators.min(1)],
+  });
 
+  // Load the ambulatori list, check the default values presence in the list and load the posizioni
   private getAmbulatori() {
     this.esamiService.getAmbulatori(this.filters()).subscribe({
       next: (ambulatori: AmbulatorioInterface[]) => {
         this.ambulatori.set(ambulatori);
+
+        // Ensure that the ambulatorioId is present in the list, if not, set it to the first one of the list
+        if (!ambulatori.some((ambulatorio) => ambulatorio.id === this.ambulatorioId())) {
+          this.ambulatorioId.set(ambulatori[0].id);
+        }
+
+        // Load/Reload the posizioni.
+        this.getPosizioni();
       },
       error: (error) => {
         console.error(error);
@@ -43,10 +60,19 @@ export class EsamiPanels {
     });
   }
 
+  // Load the posizioni list, check the default values presence in the list and load the esami
   private getPosizioni() {
     this.esamiService.getPosizioni(this.filters(), this.ambulatorioId()).subscribe({
       next: (posizioni: PosizioneInterface[]) => {
         this.posizioni.set(posizioni);
+
+        // Ensure that the posizioneId is present in the list, if not, set it to the first one of the list
+        if (!posizioni.some((posizione) => posizione.id === this.posizioneId())) {
+          this.posizioneId.set(posizioni[0].id);
+        }
+
+        // Load/Reload the esami.
+        this.getEsami();
       },
       error: (error) => {
         console.error(error);
@@ -54,10 +80,16 @@ export class EsamiPanels {
     });
   }
 
+  // Load the esami list and check the default values presence in the list
   private getEsami() {
     this.esamiService.getEsami(this.filters(), this.ambulatorioId(), this.posizioneId()).subscribe({
       next: (esami: EsameInterface[]) => {
         this.esami.set(esami);
+
+        // Ensure that the esameId is present in the list, if not, set it to the first one of the list
+        if (!esami.some((esame) => esame.id === this.esameId())) {
+          this.esameId.set(esami[0].id);
+        }
       },
       error: (error) => {
         console.error(error);
@@ -66,26 +98,26 @@ export class EsamiPanels {
   }
 
   ngOnInit() {
-    //TODO: on ambulatorio/posizione/esame change, reload the remaining lists and update the form
+    // Set the default ids
+    this.ambulatorioId.set(this.ambulatorioIdDefault());
+    this.posizioneId.set(this.posizioneIdDefault());
+    this.esameId.set(this.esameIdDefault());
+
+    // This is unnecessary, since the ngOnChanges will trigger the getAmbulatori
+    // this.getAmbulatori();
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    console.log('OnChanges');
     for (const inputName in changes) {
-      const inputValues = changes[inputName];
-      switch (inputName) {
-        case 'ambulatorioIdDefault':
-          this.ambulatorioId.set(inputValues.currentValue);
-          break;
-        case 'posizioneIdDefault':
-          this.posizioneId.set(inputValues.currentValue);
-          break;
-        case 'esameIdDefault':
-          this.esameId.set(inputValues.currentValue);
-          break;
-        case 'filters':
-          this.getAmbulatori();
-          break;
+      if (inputName === 'filters') {
+        this.getAmbulatori();
+        break;
       }
     }
+  }
+
+  onSubmit() {
+    console.log('Submit', this.esamiForm.value);
   }
 }

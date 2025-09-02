@@ -5,6 +5,7 @@ import { EsameInterface } from '../models/esame-interface';
 import { Observable } from 'rxjs';
 import { PosizioneInterface } from '../models/posizione-interface';
 import { AmbulatorioInterface } from '../models/ambulatorio-interface';
+import { FieldFilterEnum } from '../models/field-filter-enum';
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +14,9 @@ export class EsamiService {
   http = inject(HttpClient);
 
   private prepareFiltersParams(filters: FiltersInterface) {
+    if (filters.selectedField === FieldFilterEnum.nessuno) {
+      return {};
+    }
     return {
       [filters.selectedField]: filters.valueField,
     };

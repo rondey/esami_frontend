@@ -4,15 +4,16 @@
       <mat-card-title> Selezione degli esami </mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <form>
+      <form [formGroup]="esamiForm" (ngSubmit)="onSubmit()">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div class="">
             <p class="text-center text-lg">Ambulatori</p>
             <mat-selection-list
               class="border border-solid rounded-sm max-h-64 overflow-y-auto"
               [multiple]="false"
+              formControlName="ambulatorioId"
             >
-              @for (ambulatorio of ambulatori(); track ambulatorio) {
+              @for (ambulatorio of ambulatori(); track ambulatorio.id) {
               <mat-list-option [value]="ambulatorio.id">
                 {{ ambulatorio.descrizioneAmbulatorio }}
               </mat-list-option>
@@ -24,8 +25,9 @@
             <mat-selection-list
               class="border border-solid rounded-sm max-h-64 overflow-y-auto"
               [multiple]="false"
+              formControlName="posizioneId"
             >
-              @for (posizione of posizioni(); track posizione) {
+              @for (posizione of posizioni(); track posizione.id) {
               <mat-list-option [value]="posizione.id">{{
                 posizione.descrizionePosizione
               }}</mat-list-option>
@@ -37,8 +39,9 @@
             <mat-selection-list
               class="border border-solid rounded-sm max-h-64 overflow-y-auto"
               [multiple]="false"
+              formControlName="esameId"
             >
-              @for (esame of esami(); track esame) {
+              @for (esame of esami(); track esame.id) {
               <mat-list-option [value]="esame.id">
                 {{ esame.descrizioneEsame }}
               </mat-list-option>
