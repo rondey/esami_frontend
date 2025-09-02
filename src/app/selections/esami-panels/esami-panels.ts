@@ -35,9 +35,9 @@ export class EsamiPanels {
 
   esamiForm = this.formBuilder.group({
     // Id must have a min value of 1
-    ambulatorioId: [0, Validators.required, Validators.min(1)],
-    posizioneId: [0, Validators.required, Validators.min(1)],
-    esameId: [0, Validators.required, Validators.min(1)],
+    ambulatorioId: [0, [Validators.required, Validators.min(1)]],
+    posizioneId: [0, [Validators.required, Validators.min(1)]],
+    esameId: [0, [Validators.required, Validators.min(1)]],
   });
 
   // Load the ambulatori list, check the default values presence in the list and load the posizioni
