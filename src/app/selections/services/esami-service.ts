@@ -1,10 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { FiltersInterface } from './models/filters-interface';
-import { EsameInterface } from './models/esame-interface';
+import { FiltersInterface } from '../models/filters-interface';
+import { EsameInterface } from '../models/esame-interface';
 import { Observable } from 'rxjs';
-import { PosizioneInterface } from './models/posizione-interface';
-import { AmbulatoreInterface } from './models/ambulatore-interface';
+import { PosizioneInterface } from '../models/posizione-interface';
+import { AmbulatorioInterface } from '../models/ambulatorio-interface';
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +19,7 @@ export class EsamiService {
   }
 
   getAmbulatori(filters: FiltersInterface) {
-    return this.http.get<AmbulatoreInterface[]>('ambulatori', {
+    return this.http.get<AmbulatorioInterface[]>('ambulatori', {
       params: this.prepareFiltersParams(filters),
     });
   }

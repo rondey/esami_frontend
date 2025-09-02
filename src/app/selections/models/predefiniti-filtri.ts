@@ -2,6 +2,7 @@ export interface PredefinitiFiltri {
   campoDiFiltraggio: string;
   valoreDiFiltraggio: string;
 
-  ambulatorio: number;
-  posizione: number;
+  ambulatorioId: number;
+  posizioneId: number;
+  esameId: number;
 }

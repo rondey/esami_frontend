@@ -1,4 +1,4 @@
-export interface AmbulatoreInterface {
+export interface AmbulatorioInterface {
   id: number;
   descrizioneAmbulatorio: string;
 }

@@ -64,6 +64,11 @@ export class FiltersPanel {
 
   onReset() {
     this.filterForm.reset();
+    // Update the filters selected
+    this.filters.set({
+      selectedField: FieldFilterEnum.nessuno,
+      valueField: '',
+    });
 
     // Required, otherwise the form appears invalid
     this.filterForm.clearValidators();

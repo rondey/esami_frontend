@@ -1,18 +1,22 @@
-<div class="mt-4 sm:w-xl">
+<div class="mt-4">
   <mat-card appearance="outlined">
     <mat-card-header>
       <mat-card-title> Selezione degli esami </mat-card-title>
     </mat-card-header>
     <mat-card-content>
       <form>
-        <div class="grid grid-cols-1 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div class="">
             <p class="text-center text-lg">Ambulatori</p>
             <mat-selection-list
               class="border border-solid rounded-sm max-h-64 overflow-y-auto"
               [multiple]="false"
             >
-              <mat-list-option value="item"> Questo è un testo molto grande </mat-list-option>
+              @for (ambulatorio of ambulatori(); track ambulatorio) {
+              <mat-list-option [value]="ambulatorio.id">
+                {{ ambulatorio.descrizioneAmbulatorio }}
+              </mat-list-option>
+              }
             </mat-selection-list>
           </div>
           <div class="">
@@ -21,7 +25,11 @@
               class="border border-solid rounded-sm max-h-64 overflow-y-auto"
               [multiple]="false"
             >
-              <mat-list-option value="item"> item </mat-list-option>
+              @for (posizione of posizioni(); track posizione) {
+              <mat-list-option [value]="posizione.id">{{
+                posizione.descrizionePosizione
+              }}</mat-list-option>
+              }
             </mat-selection-list>
           </div>
           <div class="">
@@ -30,7 +38,11 @@
               class="border border-solid rounded-sm max-h-64 overflow-y-auto"
               [multiple]="false"
             >
-              <mat-list-option value="item"> item </mat-list-option>
+              @for (esame of esami(); track esame) {
+              <mat-list-option [value]="esame.id">
+                {{ esame.descrizioneEsame }}
+              </mat-list-option>
+              }
             </mat-selection-list>
           </div>
           <div class="text-center col-span-full">

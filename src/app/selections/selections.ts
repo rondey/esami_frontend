@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FiltersPanel } from './filters-panel/filters-panel';
 import { FiltersInterface } from './models/filters-interface';
 import { FieldFilterEnum } from './models/field-filter-enum';
@@ -20,6 +20,10 @@ export class Selections {
     valueField: '',
   };
 
+  ambulatorioId = signal<number>(0);
+  posizioneId = signal<number>(0);
+  esameId = signal<number>(0);
+
   ngOnInit() {
     this.predefinitiFiltriService.getPredefinitiFiltri().subscribe({
       next: (predefinitiFiltri: PredefinitiFiltri) => {
@@ -31,6 +35,10 @@ export class Selections {
           selectedField: selectedFieldApi,
           valueField: predefinitiFiltri.valoreDiFiltraggio,
         };
+
+        this.ambulatorioId.set(predefinitiFiltri.ambulatorioId);
+        this.posizioneId.set(predefinitiFiltri.posizioneId);
+        this.esameId.set(predefinitiFiltri.esameId);
       },
       error: (error) => {
         console.error(error);
