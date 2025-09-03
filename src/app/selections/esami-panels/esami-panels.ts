@@ -9,6 +9,7 @@ import { AmbulatorioInterface } from '../models/ambulatorio-interface';
 import { PosizioneInterface } from '../models/posizione-interface';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-esami-panels',
@@ -69,31 +70,33 @@ export class EsamiPanels {
     this.isPosizioniLoading.set(true);
     this.isEsamiLoading.set(true);
 
-    this.esamiService.getAmbulatori(this.filters()).subscribe({
-      next: (ambulatori: AmbulatorioInterface[]) => {
-        this.ambulatori.set(ambulatori);
+    this.esamiService
+      .getAmbulatori(this.filters())
+      .pipe(
+        finalize(() => {
+          this.isAmbulatoriLoading.set(false);
+        })
+      )
+      .subscribe({
+        next: (ambulatori: AmbulatorioInterface[]) => {
+          this.ambulatori.set(ambulatori);
 
-        // Ensure that the ambulatorioId is present in the list, if not, set it to the first one of the list
-        const id = this.esamiForm.value.ambulatorioId?.[0];
-        if (!ambulatori.some((a) => a.id === id)) {
-          this.esamiForm.patchValue({
-            ambulatorioId: ambulatori.length > 0 ? [ambulatori[0].id] : null,
-          });
-        }
+          // Ensure that the ambulatorioId is present in the list, if not, set it to the first one of the list
+          const id = this.esamiForm.value.ambulatorioId?.[0];
+          if (!ambulatori.some((a) => a.id === id)) {
+            this.esamiForm.patchValue({
+              ambulatorioId: ambulatori.length > 0 ? [ambulatori[0].id] : null,
+            });
+          }
 
-        // Load/Reload the posizioni.
-        this.getPosizioni();
-      },
-      error: (error) => {
-        console.error(error);
-
-        this.isPosizioniLoading.set(false);
-        this.isEsamiLoading.set(false);
-      },
-      complete: () => {
-        this.isAmbulatoriLoading.set(false);
-      },
-    });
+          // Load/Reload the posizioni.
+          this.getPosizioni();
+        },
+        error: (error) => {
+          this.isPosizioniLoading.set(false);
+          this.isEsamiLoading.set(false);
+        },
+      });
   }
 
   // Load the posizioni list, check the default values presence in the list and load the esami
@@ -101,30 +104,34 @@ export class EsamiPanels {
     const ambulatorioId = this.esamiForm.value.ambulatorioId?.[0];
     if (!ambulatorioId) return;
 
-    this.esamiService.getPosizioni(this.filters(), ambulatorioId).subscribe({
-      next: (posizioni: PosizioneInterface[]) => {
-        this.posizioni.set(posizioni);
+    this.esamiService
+      .getPosizioni(this.filters(), ambulatorioId)
+      .pipe(
+        finalize(() => {
+          this.isPosizioniLoading.set(false);
+        })
+      )
+      .subscribe({
+        next: (posizioni: PosizioneInterface[]) => {
+          this.posizioni.set(posizioni);
 
-        // Ensure that the posizioneId is present in the list, if not, set it to the first one of the list
-        const id = this.esamiForm.value.posizioneId?.[0];
-        if (!posizioni.some((p) => p.id === id)) {
-          this.esamiForm.patchValue({
-            posizioneId: posizioni.length > 0 ? [posizioni[0].id] : null,
-          });
-        }
+          // Ensure that the posizioneId is present in the list, if not, set it to the first one of the list
+          const id = this.esamiForm.value.posizioneId?.[0];
+          if (!posizioni.some((p) => p.id === id)) {
+            this.esamiForm.patchValue({
+              posizioneId: posizioni.length > 0 ? [posizioni[0].id] : null,
+            });
+          }
 
-        // Load/Reload the esami.
-        this.getEsami();
-      },
-      error: (error) => {
-        console.error(error);
+          // Load/Reload the esami.
+          this.getEsami();
+        },
+        error: (error) => {
+          console.error(error);
 
-        this.isEsamiLoading.set(false);
-      },
-      complete: () => {
-        this.isPosizioniLoading.set(false);
-      },
-    });
+          this.isEsamiLoading.set(false);
+        },
+      });
   }
 
   // Load the esami list and check the default values presence in the list
@@ -134,23 +141,27 @@ export class EsamiPanels {
 
     if (!ambulatorioId || !posizioneId) return;
 
-    this.esamiService.getEsami(this.filters(), ambulatorioId, posizioneId).subscribe({
-      next: (esami: EsameInterface[]) => {
-        this.esami.set(esami);
+    this.esamiService
+      .getEsami(this.filters(), ambulatorioId, posizioneId)
+      .pipe(
+        finalize(() => {
+          this.isEsamiLoading.set(false);
+        })
+      )
+      .subscribe({
+        next: (esami: EsameInterface[]) => {
+          this.esami.set(esami);
 
-        // Ensure that the esameId is present in the list, if not, set it to the first one of the list
-        const id = this.esamiForm.value.esameId?.[0];
-        if (!esami.some((e) => e.id === id)) {
-          this.esamiForm.patchValue({ esameId: esami.length > 0 ? [esami[0].id] : null });
-        }
-      },
-      error: (error) => {
-        console.error(error);
-      },
-      complete: () => {
-        this.isEsamiLoading.set(false);
-      },
-    });
+          // Ensure that the esameId is present in the list, if not, set it to the first one of the list
+          const id = this.esamiForm.value.esameId?.[0];
+          if (!esami.some((e) => e.id === id)) {
+            this.esamiForm.patchValue({ esameId: esami.length > 0 ? [esami[0].id] : null });
+          }
+        },
+        error: (error) => {
+          console.error(error);
+        },
+      });
   }
 
   ngOnInit() {
