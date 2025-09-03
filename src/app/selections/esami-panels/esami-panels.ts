@@ -103,6 +103,9 @@ export class EsamiPanels {
 
   // Load the posizioni list, check the default values presence in the list and load the esami
   private getPosizioni() {
+    this.isPosizioniLoading.set(true);
+    this.isEsamiLoading.set(true);
+
     const ambulatorioId = this.esamiForm.value.ambulatorioId?.[0];
     if (!ambulatorioId) {
       this.isPosizioniLoading.set(false);
@@ -121,6 +124,8 @@ export class EsamiPanels {
       .subscribe({
         next: (posizioni: PosizioneInterface[]) => {
           this.posizioni.set(posizioni);
+
+          // TODO: In case of posizioni empty, the esami list is not empty. It maintains the last list
 
           // Ensure that the posizioneId is present in the list, if not, set it to the first one of the list
           const id = this.esamiForm.value.posizioneId?.[0];
@@ -143,6 +148,8 @@ export class EsamiPanels {
 
   // Load the esami list and check the default values presence in the list
   private getEsami() {
+    this.isEsamiLoading.set(true);
+
     const ambulatorioId = this.esamiForm.value.ambulatorioId?.[0];
     const posizioneId = this.esamiForm.value.posizioneId?.[0];
 
@@ -181,6 +188,22 @@ export class EsamiPanels {
       ambulatorioId: [this.ambulatorioIdDefault()],
       posizioneId: [this.posizioneIdDefault()],
       esameId: [this.esameIdDefault()],
+    });
+
+    this.esamiForm.controls.ambulatorioId.valueChanges.subscribe((_) => {
+      // The ambulatorioId control is not yet updated. Wait for it
+      setTimeout(() => {
+        // Now that the ambulatorioId control is updated, reload the posizioni
+        this.getPosizioni();
+      });
+    });
+
+    this.esamiForm.controls.posizioneId.valueChanges.subscribe((_) => {
+      // The posizioneId control is not yet updated. Wait for it
+      setTimeout(() => {
+        // Now that the posizioneId control is updated, reload the esami
+        this.getEsami();
+      });
     });
 
     // This is unnecessary, since the ngOnChanges will trigger the getAmbulatori
