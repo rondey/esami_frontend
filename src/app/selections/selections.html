@@ -1,6 +1,6 @@
 <!-- TODO: Until the filters are not loaded, show a loading spinner -->
 
-<app-filters-panel [(filters)]="filters"></app-filters-panel>
+<app-filters-panel [(filters)]="filters" [filtersResetted]="filtersResetted"></app-filters-panel>
 @if(!isLoading()){
 <app-esami-panels
   [filters]="filters"

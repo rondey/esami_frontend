@@ -1,13 +1,35 @@
-import { Component, effect, inject, model } from '@angular/core';
+import { Component, effect, inject, input, model } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCardModule } from '@angular/material/card';
 import { FieldFilterEnum } from '../models/field-filter-enum';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
+} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { Validators } from '@angular/forms';
 import { FiltersInterface } from '../models/filters-interface';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
+// Cross validator
+function selectedFieldValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const selectedField = control.get('selectedField')?.value;
+    const valueField = control.get('valueField')?.value;
+
+    if (valueField !== '' && selectedField === FieldFilterEnum.nessuno) {
+      return { invalidSelection: true };
+    }
+
+    return null;
+  };
+}
 
 @Component({
   selector: 'app-filters-panel',
@@ -25,8 +47,10 @@ import { FiltersInterface } from '../models/filters-interface';
 })
 export class FiltersPanel {
   private formBuilder = inject(FormBuilder);
+  private snackBar = inject(MatSnackBar);
 
   filters = model.required<FiltersInterface>();
+  filtersResetted = input.required<FiltersInterface>();
 
   // Used only to have the enum in the template
   FieldFilterEnum = FieldFilterEnum;
@@ -45,10 +69,15 @@ export class FiltersPanel {
   }
 
   ngOnInit() {
-    this.filterForm = this.formBuilder.group({
-      selectedField: [this.filters().selectedField, Validators.required],
-      valueField: [this.filters().valueField],
-    });
+    this.filterForm = this.formBuilder.group(
+      {
+        selectedField: [this.filters().selectedField],
+        valueField: [this.filters().valueField],
+      },
+      {
+        validators: selectedFieldValidator(),
+      }
+    );
   }
 
   private updateForm(filters: FiltersInterface) {
@@ -56,21 +85,26 @@ export class FiltersPanel {
   }
 
   onSubmit() {
-    if (this.filterForm.invalid) return;
+    if (this.filterForm.invalid) {
+      this.snackBar.open(
+        'Errore: hai inserito un testo di ricerca senza selezionare un campo di ricerca',
+        'Chiudi',
+        {
+          duration: 4000,
+        }
+      );
+      return;
+    }
 
     // Validation are already made, so we can use the "as" operator
     this.filters.set(this.filterForm.value as FiltersInterface);
   }
 
   onReset() {
-    this.filterForm.reset();
     // Update the filters selected
-    this.filters.set({
-      selectedField: FieldFilterEnum.nessuno,
-      valueField: '',
-    });
+    this.filters.set(this.filtersResetted());
 
-    // Required, otherwise the form appears invalid
-    this.filterForm.clearValidators();
+    // Update the form
+    this.filterForm.patchValue(this.filtersResetted());
   }
 }

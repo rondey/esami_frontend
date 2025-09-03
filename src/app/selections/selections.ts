@@ -15,10 +15,12 @@ import { EsamiPanels } from './esami-panels/esami-panels';
 export class Selections {
   private predefinitiFiltriService = inject(PredefinitiFiltriService);
 
-  filters: FiltersInterface = {
+  filtersResetted: FiltersInterface = {
     selectedField: FieldFilterEnum.nessuno,
     valueField: '',
   };
+
+  filters: FiltersInterface = this.filtersResetted;
 
   ambulatorioId = signal<number>(0);
   posizioneId = signal<number>(0);

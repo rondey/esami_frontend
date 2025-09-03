@@ -10,6 +10,7 @@ import { PosizioneInterface } from '../models/posizione-interface';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { finalize } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-esami-panels',
@@ -27,6 +28,7 @@ import { finalize } from 'rxjs';
 export class EsamiPanels {
   private esamiService = inject(EsamiService);
   private formBuilder = inject(FormBuilder);
+  private snackBar = inject(MatSnackBar);
 
   filters = input.required<FiltersInterface>();
 
@@ -102,7 +104,12 @@ export class EsamiPanels {
   // Load the posizioni list, check the default values presence in the list and load the esami
   private getPosizioni() {
     const ambulatorioId = this.esamiForm.value.ambulatorioId?.[0];
-    if (!ambulatorioId) return;
+    if (!ambulatorioId) {
+      this.isPosizioniLoading.set(false);
+      this.isEsamiLoading.set(false);
+
+      return;
+    }
 
     this.esamiService
       .getPosizioni(this.filters(), ambulatorioId)
@@ -139,7 +146,11 @@ export class EsamiPanels {
     const ambulatorioId = this.esamiForm.value.ambulatorioId?.[0];
     const posizioneId = this.esamiForm.value.posizioneId?.[0];
 
-    if (!ambulatorioId || !posizioneId) return;
+    if (!ambulatorioId || !posizioneId) {
+      this.isEsamiLoading.set(false);
+
+      return;
+    }
 
     this.esamiService
       .getEsami(this.filters(), ambulatorioId, posizioneId)
@@ -192,6 +203,17 @@ export class EsamiPanels {
 
   onSubmit() {
     this.esamiForm.markAllAsTouched();
+
+    if (this.esamiForm.invalid) {
+      this.snackBar.open(
+        "Errore: devi selezionare un'ambulatorio, una posizione e un'esame",
+        'Chiudi',
+        {
+          duration: 4000,
+        }
+      );
+      return;
+    }
     console.log('Submit', this.esamiForm.value);
   }
 }

@@ -10,6 +10,7 @@
             <mat-form-field>
               <mat-label>Campo di ricerca</mat-label>
               <mat-select formControlName="selectedField" name="selectedField">
+                <mat-option [value]="FieldFilterEnum.nessuno">Nessuno</mat-option>
                 <mat-option [value]="FieldFilterEnum.codiceMinisteriale"
                   >Codice ministeriale</mat-option
                 >
