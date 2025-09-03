@@ -6,46 +6,61 @@
     <mat-card-content>
       <form [formGroup]="esamiForm" (ngSubmit)="onSubmit()">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div class="">
+          <div>
             <p class="text-center text-lg">Ambulatori</p>
             <mat-selection-list
               class="border border-solid rounded-sm max-h-64 overflow-y-auto"
               [multiple]="false"
               formControlName="ambulatorioId"
+              [class.border-error]="isFieldInvalid('ambulatorioId')"
             >
-              @for (ambulatorio of ambulatori(); track ambulatorio.id) {
+              @if (isAmbulatoriLoading()) {
+              <div class="flex justify-center">
+                <mat-spinner></mat-spinner>
+              </div>
+              } @else { @for (ambulatorio of ambulatori(); track ambulatorio.id) {
               <mat-list-option [value]="ambulatorio.id">
                 {{ ambulatorio.descrizioneAmbulatorio }}
               </mat-list-option>
-              }
+              } }
             </mat-selection-list>
           </div>
-          <div class="">
+          <div>
             <p class="text-center text-lg">Posizioni del corpo</p>
             <mat-selection-list
               class="border border-solid rounded-sm max-h-64 overflow-y-auto"
               [multiple]="false"
               formControlName="posizioneId"
+              [class.border-error]="isFieldInvalid('posizioneId')"
             >
-              @for (posizione of posizioni(); track posizione.id) {
+              @if (isPosizioniLoading()) {
+              <div class="flex justify-center">
+                <mat-spinner></mat-spinner>
+              </div>
+              } @else { @for (posizione of posizioni(); track posizione.id) {
               <mat-list-option [value]="posizione.id">{{
                 posizione.descrizionePosizione
               }}</mat-list-option>
-              }
+              } }
             </mat-selection-list>
           </div>
-          <div class="">
+          <div>
             <p class="text-center text-lg">Esami</p>
             <mat-selection-list
               class="border border-solid rounded-sm max-h-64 overflow-y-auto"
               [multiple]="false"
               formControlName="esameId"
+              [class.border-error]="isFieldInvalid('esameId')"
             >
-              @for (esame of esami(); track esame.id) {
+              @if (isEsamiLoading()) {
+              <div class="flex justify-center">
+                <mat-spinner></mat-spinner>
+              </div>
+              } @else { @for (esame of esami(); track esame.id) {
               <mat-list-option [value]="esame.id">
                 {{ esame.descrizioneEsame }}
               </mat-list-option>
-              }
+              } }
             </mat-selection-list>
           </div>
           <div class="text-center col-span-full">

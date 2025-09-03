@@ -9,6 +9,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     color: var(--mat-sys-error);
 }
 
+.border-error {
+    border-color: var(--mat-sys-error);
+}
+
 h1 {
     font: var(--mat-sys-display-large);
 }
