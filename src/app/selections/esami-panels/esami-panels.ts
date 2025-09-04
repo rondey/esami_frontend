@@ -10,7 +10,7 @@ import { PosizioneInterface } from '../models/posizione-interface';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { finalize } from 'rxjs';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { NotificationsService } from '../../services/notifications-service';
 
 enum Category {
   Ambulatori = 'ambulatori',
@@ -34,7 +34,7 @@ enum Category {
 export class EsamiPanels {
   private esamiService = inject(EsamiService);
   private formBuilder = inject(FormBuilder);
-  private snackBar = inject(MatSnackBar);
+  private notificationsService = inject(NotificationsService);
 
   filters = input.required<FiltersInterface>();
 
@@ -243,12 +243,8 @@ export class EsamiPanels {
     this.esamiForm.markAllAsTouched();
 
     if (this.esamiForm.invalid) {
-      this.snackBar.open(
-        "Errore: devi selezionare un'ambulatorio, una posizione e un'esame",
-        'Chiudi',
-        {
-          duration: 4000,
-        }
+      this.notificationsService.notify(
+        "Errore: devi selezionare un'ambulatorio, una posizione e un'esame"
       );
       return;
     }

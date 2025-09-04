@@ -15,7 +15,7 @@ import {
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { FiltersInterface } from '../models/filters-interface';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { NotificationsService } from '../../services/notifications-service';
 
 // Cross validator
 function selectedFieldValidator(): ValidatorFn {
@@ -47,7 +47,7 @@ function selectedFieldValidator(): ValidatorFn {
 })
 export class FiltersPanel {
   private formBuilder = inject(FormBuilder);
-  private snackBar = inject(MatSnackBar);
+  private notificationsService = inject(NotificationsService);
 
   filters = model.required<FiltersInterface>();
   filtersResetted = input.required<FiltersInterface>();
@@ -86,12 +86,8 @@ export class FiltersPanel {
 
   onSubmit() {
     if (this.filterForm.invalid) {
-      this.snackBar.open(
-        'Errore: hai inserito un testo di ricerca senza selezionare un campo di ricerca',
-        'Chiudi',
-        {
-          duration: 4000,
-        }
+      this.notificationsService.notify(
+        'Errore: hai inserito un testo di ricerca senza selezionare un campo di ricerca'
       );
       return;
     }

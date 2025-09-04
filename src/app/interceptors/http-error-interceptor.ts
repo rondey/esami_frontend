@@ -1,10 +1,10 @@
 import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { catchError, throwError } from 'rxjs';
+import { NotificationsService } from '../services/notifications-service';
 
 export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
-  const snackBar = inject(MatSnackBar);
+  const notificationsService = inject(NotificationsService);
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
@@ -22,7 +22,7 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
         }
       }
 
-      snackBar.open(message, 'Chiudi', { duration: 4000 });
+      notificationsService.notify(message);
       return throwError(() => error);
     })
   );
