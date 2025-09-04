@@ -12,6 +12,12 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { finalize } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
+enum Category {
+  Ambulatori = 'ambulatori',
+  Posizioni = 'posizioni',
+  Esami = 'esami',
+}
+
 @Component({
   selector: 'app-esami-panels',
   imports: [
@@ -54,23 +60,30 @@ export class EsamiPanels {
   isPosizioniLoading = signal<boolean>(true);
   isEsamiLoading = signal<boolean>(true);
 
+  // Utility for the get functions that drops the list and show the loading spinner
+  private resetAndShowLoading(category: Category) {
+    switch (category) {
+      case Category.Ambulatori:
+        this.ambulatori.set([]);
+        this.isAmbulatoriLoading.set(true);
+        break;
+      case Category.Posizioni:
+        this.posizioni.set([]);
+        this.isPosizioniLoading.set(true);
+        break;
+      case Category.Esami:
+        this.esami.set([]);
+        this.isEsamiLoading.set(true);
+        break;
+    }
+  }
+
   // Drop the lists, load the ambulatori list, check the default values presence in the list and load the posizioni
   private getAmbulatori() {
     // All the ambulatori, posizioni and esami lists must be dropped before the new ones are loaded
-    this.ambulatori.set([]);
-    this.posizioni.set([]);
-    this.esami.set([]);
-
-    // Accordingly, the default values must be set to null
-    this.esamiForm.patchValue({
-      ambulatorioId: null,
-      posizioneId: null,
-      esameId: null,
-    });
-
-    this.isAmbulatoriLoading.set(true);
-    this.isPosizioniLoading.set(true);
-    this.isEsamiLoading.set(true);
+    this.resetAndShowLoading(Category.Ambulatori);
+    this.resetAndShowLoading(Category.Posizioni);
+    this.resetAndShowLoading(Category.Esami);
 
     this.esamiService
       .getAmbulatori(this.filters())
@@ -89,10 +102,11 @@ export class EsamiPanels {
             this.esamiForm.patchValue({
               ambulatorioId: ambulatori.length > 0 ? [ambulatori[0].id] : null,
             });
+            // KEEP NOTE: Don't need to launch the getPosizioni function, it will be called by the change event
+          } else {
+            // Load/Reload the posizioni
+            this.getPosizioni();
           }
-
-          // Load/Reload the posizioni.
-          this.getPosizioni();
         },
         error: (error) => {
           this.isPosizioniLoading.set(false);
@@ -103,8 +117,9 @@ export class EsamiPanels {
 
   // Load the posizioni list, check the default values presence in the list and load the esami
   private getPosizioni() {
-    this.isPosizioniLoading.set(true);
-    this.isEsamiLoading.set(true);
+    // All the posizioni and esami lists must be dropped before the new ones are loaded
+    this.resetAndShowLoading(Category.Posizioni);
+    this.resetAndShowLoading(Category.Esami);
 
     const ambulatorioId = this.esamiForm.value.ambulatorioId?.[0];
     if (!ambulatorioId) {
@@ -125,18 +140,17 @@ export class EsamiPanels {
         next: (posizioni: PosizioneInterface[]) => {
           this.posizioni.set(posizioni);
 
-          // TODO: In case of posizioni empty, the esami list is not empty. It maintains the last list
-
           // Ensure that the posizioneId is present in the list, if not, set it to the first one of the list
           const id = this.esamiForm.value.posizioneId?.[0];
           if (!posizioni.some((p) => p.id === id)) {
             this.esamiForm.patchValue({
               posizioneId: posizioni.length > 0 ? [posizioni[0].id] : null,
             });
+            // KEEP NOTE: Don't need to launch the getEsami function, it will be called by the change event
+          } else {
+            // Load/Reload the esami
+            this.getEsami();
           }
-
-          // Load/Reload the esami.
-          this.getEsami();
         },
         error: (error) => {
           console.error(error);
@@ -148,7 +162,8 @@ export class EsamiPanels {
 
   // Load the esami list and check the default values presence in the list
   private getEsami() {
-    this.isEsamiLoading.set(true);
+    // All the esami list must be dropped before the new one is loaded
+    this.resetAndShowLoading(Category.Esami);
 
     const ambulatorioId = this.esamiForm.value.ambulatorioId?.[0];
     const posizioneId = this.esamiForm.value.posizioneId?.[0];
