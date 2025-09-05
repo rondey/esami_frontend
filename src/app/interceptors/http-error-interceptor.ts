@@ -1,7 +1,7 @@
 import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
-import { NotificationsService } from '../services/notifications-service';
+import { NotificationsService, NotificationType } from '../services/notifications-service';
 
 export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
   const notificationsService = inject(NotificationsService);
@@ -15,14 +15,15 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
         message = `Errore di connessione. Controlla la tua rete. (${error.message})`;
       } else {
         if (error.status >= 400 && error.status < 500) {
-          message = `Errore nella richiesta. Controlla i dati inseriti. (${error.message})`;
+          const backendErrorMessage = error.error?.message;
+          message = `Errore nella richiesta. Controlla i dati inseriti. (${backendErrorMessage})`;
         } else if (error.status >= 500) {
           // The server error message is useless for the user, so we don't show it (the user cannot do anything about it anyway)
           message = 'Errore del server, riprova più tardi.';
         }
       }
 
-      notificationsService.notify(message);
+      notificationsService.notify(message, NotificationType.Error);
       return throwError(() => error);
     })
   );

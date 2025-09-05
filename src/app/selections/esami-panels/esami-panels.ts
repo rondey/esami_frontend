@@ -1,4 +1,11 @@
-import { Component, inject, input, signal, SimpleChanges } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  input,
+  signal,
+  SimpleChanges,
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatListOption, MatSelectionList } from '@angular/material/list';
@@ -10,7 +17,8 @@ import { PosizioneInterface } from '../models/posizione-interface';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { finalize } from 'rxjs';
-import { NotificationsService } from '../../services/notifications-service';
+import { NotificationsService, NotificationType } from '../../services/notifications-service';
+import { ConfermeStore } from '../stores/conferme.store';
 
 enum Category {
   Ambulatori = 'ambulatori',
@@ -30,11 +38,16 @@ enum Category {
   ],
   templateUrl: './esami-panels.html',
   styleUrl: './esami-panels.css',
+  providers: [ConfermeStore],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EsamiPanels {
-  private esamiService = inject(EsamiService);
-  private formBuilder = inject(FormBuilder);
-  private notificationsService = inject(NotificationsService);
+  private readonly esamiService = inject(EsamiService);
+  private readonly formBuilder = inject(FormBuilder);
+  private readonly notificationsService = inject(NotificationsService);
+
+  // Not private because the loading state is used in the template
+  readonly confermeStore = inject(ConfermeStore);
 
   filters = input.required<FiltersInterface>();
 
@@ -108,7 +121,7 @@ export class EsamiPanels {
             this.getPosizioni();
           }
         },
-        error: (error) => {
+        error: (_) => {
           this.isPosizioniLoading.set(false);
           this.isEsamiLoading.set(false);
         },
@@ -152,9 +165,7 @@ export class EsamiPanels {
             this.getEsami();
           }
         },
-        error: (error) => {
-          console.error(error);
-
+        error: (_) => {
           this.isEsamiLoading.set(false);
         },
       });
@@ -190,9 +201,6 @@ export class EsamiPanels {
           if (!esami.some((e) => e.id === id)) {
             this.esamiForm.patchValue({ esameId: esami.length > 0 ? [esami[0].id] : null });
           }
-        },
-        error: (error) => {
-          console.error(error);
         },
       });
   }
@@ -244,10 +252,14 @@ export class EsamiPanels {
 
     if (this.esamiForm.invalid) {
       this.notificationsService.notify(
-        "Errore: devi selezionare un'ambulatorio, una posizione e un'esame"
+        "Errore: devi selezionare un'ambulatorio, una posizione e un'esame",
+        NotificationType.Error
       );
       return;
     }
-    console.log('Submit', this.esamiForm.value);
+    const { ambulatorioId, esameId } = this.esamiForm.value;
+
+    // The form is valid, therefore the values are present
+    this.confermeStore.createConferma(ambulatorioId![0], esameId![0]);
   }
 }

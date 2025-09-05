@@ -5,6 +5,7 @@ import { FieldFilterEnum } from './models/field-filter-enum';
 import { PredefinitiFiltriService } from './services/predefiniti-filtri-service';
 import { PredefinitiFiltri } from './models/predefiniti-filtri';
 import { EsamiPanels } from './esami-panels/esami-panels';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-selections',
@@ -13,7 +14,7 @@ import { EsamiPanels } from './esami-panels/esami-panels';
   styleUrl: './selections.css',
 })
 export class Selections {
-  private predefinitiFiltriService = inject(PredefinitiFiltriService);
+  private readonly predefinitiFiltriService = inject(PredefinitiFiltriService);
 
   filtersResetted: FiltersInterface = {
     selectedField: FieldFilterEnum.nessuno,
@@ -29,28 +30,28 @@ export class Selections {
   isLoading = signal<boolean>(true);
 
   ngOnInit() {
-    this.predefinitiFiltriService.getPredefinitiFiltri().subscribe({
-      next: (predefinitiFiltri: PredefinitiFiltri) => {
-        // Ensure the selected field is valid
-        const selectedFieldApi =
-          (predefinitiFiltri.campoDiFiltraggio as FieldFilterEnum) ?? FieldFilterEnum.nessuno;
+    this.predefinitiFiltriService
+      .getPredefinitiFiltri()
+      .pipe(
+        finalize(() => {
+          this.isLoading.set(false);
+        })
+      )
+      .subscribe({
+        next: (predefinitiFiltri: PredefinitiFiltri) => {
+          // Ensure the selected field is valid
+          const selectedFieldApi =
+            (predefinitiFiltri.campoDiFiltraggio as FieldFilterEnum) ?? FieldFilterEnum.nessuno;
 
-        this.filters = {
-          selectedField: selectedFieldApi,
-          valueField: predefinitiFiltri.valoreDiFiltraggio,
-        };
+          this.filters = {
+            selectedField: selectedFieldApi,
+            valueField: predefinitiFiltri.valoreDiFiltraggio,
+          };
 
-        this.ambulatorioId.set(predefinitiFiltri.ambulatorioId);
-        this.posizioneId.set(predefinitiFiltri.posizioneId);
-        this.esameId.set(predefinitiFiltri.esameId);
-      },
-      error: (error) => {
-        console.error(error);
-      },
-      complete: () => {
-        // Even if the default filters are not loaded, the user may want to use anyway the esami panels.
-        this.isLoading.set(false);
-      },
-    });
+          this.ambulatorioId.set(predefinitiFiltri.ambulatorioId);
+          this.posizioneId.set(predefinitiFiltri.posizioneId);
+          this.esameId.set(predefinitiFiltri.esameId);
+        },
+      });
   }
 }

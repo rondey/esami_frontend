@@ -64,7 +64,10 @@
             </mat-selection-list>
           </div>
           <div class="text-center col-span-full">
-            <button matButton="tonal" type="submit">Conferma Esame</button>
+            <!-- TODO: Show a spinner while loading instead of disabling the button -->
+            <button matButton="tonal" type="submit" [disabled]="confermeStore.isLoading()">
+              Conferma Esame
+            </button>
           </div>
         </div>
       </form>

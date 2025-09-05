@@ -15,7 +15,7 @@ import {
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { FiltersInterface } from '../models/filters-interface';
-import { NotificationsService } from '../../services/notifications-service';
+import { NotificationsService, NotificationType } from '../../services/notifications-service';
 
 // Cross validator
 function selectedFieldValidator(): ValidatorFn {
@@ -46,8 +46,8 @@ function selectedFieldValidator(): ValidatorFn {
   styleUrl: './filters-panel.css',
 })
 export class FiltersPanel {
-  private formBuilder = inject(FormBuilder);
-  private notificationsService = inject(NotificationsService);
+  private readonly formBuilder = inject(FormBuilder);
+  private readonly notificationsService = inject(NotificationsService);
 
   filters = model.required<FiltersInterface>();
   filtersResetted = input.required<FiltersInterface>();
@@ -87,7 +87,8 @@ export class FiltersPanel {
   onSubmit() {
     if (this.filterForm.invalid) {
       this.notificationsService.notify(
-        'Errore: hai inserito un testo di ricerca senza selezionare un campo di ricerca'
+        'Errore: hai inserito un testo di ricerca senza selezionare un campo di ricerca',
+        NotificationType.Error
       );
       return;
     }
