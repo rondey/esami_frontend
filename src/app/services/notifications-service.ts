@@ -12,9 +12,9 @@ export enum NotificationType {
   providedIn: 'root',
 })
 export class NotificationsService {
-  private snackBar = inject(MatSnackBar);
+  private readonly snackBar = inject(MatSnackBar);
 
-  _getEmoji(type: NotificationType): string {
+  private _getEmoji(type: NotificationType): string {
     switch (type) {
       case NotificationType.Success:
         return '✅';
