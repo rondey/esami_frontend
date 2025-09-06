@@ -5,6 +5,7 @@ import { inject } from '@angular/core';
 import { finalize } from 'rxjs';
 import { NotificationsService, NotificationType } from '../../services/notifications-service';
 import { SortDirection } from '@angular/material/sort';
+import { HttpErrorResponse } from '@angular/common/http';
 
 export enum LoadingState {
   Loading = 'loading',
@@ -41,6 +42,17 @@ export const ConfermeStore = signalStore(
         this.getConferme();
       },
 
+      _updateLoadingStateOnError(error: HttpErrorResponse): void {
+        if (error.status < 100 || error.status >= 500) {
+          // Error unrecoverable. The conferme list should not be visible
+          patchState(store, { loadingState: LoadingState.Error });
+          return;
+        }
+
+        // Error recoverable made by the user. The conferme list should be visible
+        patchState(store, { loadingState: LoadingState.Loaded });
+      },
+
       async getConferme(): Promise<void> {
         const { sortBy, sortOrder } = store.filter();
 
@@ -49,9 +61,7 @@ export const ConfermeStore = signalStore(
           next: (conferme: ConfermaInterface[]) => {
             patchState(store, { conferme, loadingState: LoadingState.Loaded });
           },
-          error: () => {
-            patchState(store, { loadingState: LoadingState.Error });
-          },
+          error: this._updateLoadingStateOnError,
         });
       },
 
@@ -66,9 +76,7 @@ export const ConfermeStore = signalStore(
             );
             this.getConferme();
           },
-          error: () => {
-            patchState(store, { loadingState: LoadingState.Error });
-          },
+          error: this._updateLoadingStateOnError,
         });
       },
 
@@ -83,9 +91,7 @@ export const ConfermeStore = signalStore(
             );
             this.getConferme();
           },
-          error: () => {
-            patchState(store, { loadingState: LoadingState.Error });
-          },
+          error: this._updateLoadingStateOnError,
         });
       },
     })
