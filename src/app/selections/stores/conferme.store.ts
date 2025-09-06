@@ -73,6 +73,27 @@ export const ConfermeStore = signalStore(
             },
           });
       },
+
+      async removeConferma(id: number): Promise<void> {
+        patchState(store, { isLoading: true });
+
+        confermeService
+          .removeConferma(id)
+          .pipe(
+            finalize(() => {
+              patchState(store, { isLoading: false });
+            })
+          )
+          .subscribe({
+            next: (_) => {
+              notificationsService.notify(
+                'La conferma è stata cancellata con successo!',
+                NotificationType.Success
+              );
+              this.getConferme();
+            },
+          });
+      },
     })
   ),
   withHooks({

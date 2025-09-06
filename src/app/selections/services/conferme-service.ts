@@ -21,4 +21,8 @@ export class ConfermeService {
       esameId,
     });
   }
+
+  removeConferma(id: number): Observable<ConfermaInterface> {
+    return this.http.delete<ConfermaInterface>(`conferme/${id}`);
+  }
 }

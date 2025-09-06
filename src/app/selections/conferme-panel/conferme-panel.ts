@@ -28,19 +28,12 @@ export class ConfermePanel {
 
   @ViewChild(MatSort) sort!: MatSort;
 
-  ngAfterViewInit() {
-    // Collego il sort alla tabella
-    this.sort.disableClear = true; // opzionale: impedisce lo stato "nessun ordinamento"
-  }
-
   onSortChange(sort: Sort) {
     const { active, direction } = sort;
-    console.log(sort);
     this.confermeStore.updateSort(active, direction);
   }
 
   onDelete(id: number) {
-    console.log(id);
-    // this.confermeStore.delete(id);
+    this.confermeStore.removeConferma(id);
   }
 }
