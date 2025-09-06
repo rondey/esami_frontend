@@ -18,7 +18,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { finalize } from 'rxjs';
 import { NotificationsService, NotificationType } from '../../services/notifications-service';
-import { ConfermeStore } from '../stores/conferme.store';
+import { ConfermeStore, LoadingState } from '../stores/conferme.store';
 
 enum Category {
   Ambulatori = 'ambulatori',
@@ -71,6 +71,9 @@ export class EsamiPanels {
   isAmbulatoriLoading = signal<boolean>(true);
   isPosizioniLoading = signal<boolean>(true);
   isEsamiLoading = signal<boolean>(true);
+
+  // Necessary only for the template that needs the LoadingState type
+  LoadingState = LoadingState;
 
   // Utility for the get functions that drops the list and show the loading spinner
   private resetAndShowLoading(category: Category) {

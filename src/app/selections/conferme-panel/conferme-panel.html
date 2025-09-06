@@ -1,8 +1,9 @@
-@if(confermeStore.isLoading()) {
+@if(confermeStore.loadingState() === LoadingState.Loading) {
 <div class="flex justify-center">
   <mat-spinner></mat-spinner>
 </div>
-} @else{
+} @else if(confermeStore.loadingState() === LoadingState.Loaded) {
+<!-- TODO: Handle empty table -->
 <table
   mat-table
   [dataSource]="confermeStore.conferme()"
@@ -63,4 +64,11 @@
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 </table>
+} @else {
+<div class="flex justify-center">
+  <button matButton="filled" (click)="getConferme()">
+    <mat-icon>refresh</mat-icon>
+    Ricarica la tabella
+  </button>
+</div>
 }

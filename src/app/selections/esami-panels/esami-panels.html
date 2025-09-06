@@ -64,10 +64,19 @@
             </mat-selection-list>
           </div>
           <div class="text-center col-span-full">
-            <!-- TODO: Show a spinner while loading instead of disabling the button -->
-            <button matButton="tonal" type="submit" [disabled]="confermeStore.isLoading()">
+            @if(confermeStore.loadingState() === LoadingState.Loading){
+            <div class="flex justify-center">
+              <mat-spinner></mat-spinner>
+            </div>
+            } @else {
+            <button
+              matButton="tonal"
+              type="submit"
+              [disabled]="confermeStore.loadingState() === LoadingState.Loading"
+            >
               Conferma Esame
             </button>
+            }
           </div>
         </div>
       </form>
