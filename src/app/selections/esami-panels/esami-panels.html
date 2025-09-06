@@ -1,85 +1,83 @@
-<div class="mt-4">
-  <mat-card appearance="outlined">
-    <mat-card-header>
-      <mat-card-title> Selezione degli esami </mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <form [formGroup]="esamiForm" (ngSubmit)="onSubmit()">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <p class="text-center text-lg">Ambulatori</p>
-            <mat-selection-list
-              class="border border-solid rounded-sm max-h-64 overflow-y-auto"
-              [multiple]="false"
-              formControlName="ambulatorioId"
-              [class.border-error]="isFieldInvalid('ambulatorioId')"
-            >
-              @if (isAmbulatoriLoading()) {
-              <div class="flex justify-center">
-                <mat-spinner></mat-spinner>
-              </div>
-              } @else { @for (ambulatorio of ambulatori(); track ambulatorio.id) {
-              <mat-list-option [value]="ambulatorio.id">
-                {{ ambulatorio.descrizioneAmbulatorio }}
-              </mat-list-option>
-              } }
-            </mat-selection-list>
-          </div>
-          <div>
-            <p class="text-center text-lg">Posizioni del corpo</p>
-            <mat-selection-list
-              class="border border-solid rounded-sm max-h-64 overflow-y-auto"
-              [multiple]="false"
-              formControlName="posizioneId"
-              [class.border-error]="isFieldInvalid('posizioneId')"
-            >
-              @if (isPosizioniLoading()) {
-              <div class="flex justify-center">
-                <mat-spinner></mat-spinner>
-              </div>
-              } @else { @for (posizione of posizioni(); track posizione.id) {
-              <mat-list-option [value]="posizione.id">{{
-                posizione.descrizionePosizione
-              }}</mat-list-option>
-              } }
-            </mat-selection-list>
-          </div>
-          <div>
-            <p class="text-center text-lg">Esami</p>
-            <mat-selection-list
-              class="border border-solid rounded-sm max-h-64 overflow-y-auto"
-              [multiple]="false"
-              formControlName="esameId"
-              [class.border-error]="isFieldInvalid('esameId')"
-            >
-              @if (isEsamiLoading()) {
-              <div class="flex justify-center">
-                <mat-spinner></mat-spinner>
-              </div>
-              } @else { @for (esame of esami(); track esame.id) {
-              <mat-list-option [value]="esame.id">
-                {{ esame.descrizioneEsame }}
-              </mat-list-option>
-              } }
-            </mat-selection-list>
-          </div>
-          <div class="text-center col-span-full">
-            @if(confermeStore.loadingState() === LoadingState.Loading){
+<mat-card appearance="outlined">
+  <mat-card-header>
+    <mat-card-title> Lista degli esami disponibili </mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <form [formGroup]="esamiForm" (ngSubmit)="onSubmit()">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <p class="text-center text-lg">Ambulatori</p>
+          <mat-selection-list
+            class="border border-solid rounded-sm max-h-64 overflow-y-auto"
+            [multiple]="false"
+            formControlName="ambulatorioId"
+            [class.border-error]="isFieldInvalid('ambulatorioId')"
+          >
+            @if (isAmbulatoriLoading()) {
             <div class="flex justify-center">
               <mat-spinner></mat-spinner>
             </div>
-            } @else {
-            <button
-              matButton="tonal"
-              type="submit"
-              [disabled]="confermeStore.loadingState() === LoadingState.Loading"
-            >
-              Conferma Esame
-            </button>
-            }
-          </div>
+            } @else { @for (ambulatorio of ambulatori(); track ambulatorio.id) {
+            <mat-list-option [value]="ambulatorio.id">
+              {{ ambulatorio.descrizioneAmbulatorio }}
+            </mat-list-option>
+            } }
+          </mat-selection-list>
         </div>
-      </form>
-    </mat-card-content>
-  </mat-card>
-</div>
+        <div>
+          <p class="text-center text-lg">Posizioni del corpo</p>
+          <mat-selection-list
+            class="border border-solid rounded-sm max-h-64 overflow-y-auto"
+            [multiple]="false"
+            formControlName="posizioneId"
+            [class.border-error]="isFieldInvalid('posizioneId')"
+          >
+            @if (isPosizioniLoading()) {
+            <div class="flex justify-center">
+              <mat-spinner></mat-spinner>
+            </div>
+            } @else { @for (posizione of posizioni(); track posizione.id) {
+            <mat-list-option [value]="posizione.id">{{
+              posizione.descrizionePosizione
+            }}</mat-list-option>
+            } }
+          </mat-selection-list>
+        </div>
+        <div>
+          <p class="text-center text-lg">Esami</p>
+          <mat-selection-list
+            class="border border-solid rounded-sm max-h-64 overflow-y-auto"
+            [multiple]="false"
+            formControlName="esameId"
+            [class.border-error]="isFieldInvalid('esameId')"
+          >
+            @if (isEsamiLoading()) {
+            <div class="flex justify-center">
+              <mat-spinner></mat-spinner>
+            </div>
+            } @else { @for (esame of esami(); track esame.id) {
+            <mat-list-option [value]="esame.id">
+              {{ esame.descrizioneEsame }}
+            </mat-list-option>
+            } }
+          </mat-selection-list>
+        </div>
+        <div class="text-center col-span-full">
+          @if(confermeStore.loadingState() === LoadingState.Loading){
+          <div class="flex justify-center">
+            <mat-spinner></mat-spinner>
+          </div>
+          } @else {
+          <button
+            matButton="tonal"
+            type="submit"
+            [disabled]="confermeStore.loadingState() === LoadingState.Loading"
+          >
+            Conferma Esame
+          </button>
+          }
+        </div>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

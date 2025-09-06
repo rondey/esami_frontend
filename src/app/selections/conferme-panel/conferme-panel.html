@@ -1,9 +1,10 @@
+<h3 class="mb-5">Esami confermati</h3>
+
 @if(confermeStore.loadingState() === LoadingState.Loading) {
 <div class="flex justify-center">
   <mat-spinner></mat-spinner>
 </div>
 } @else if(confermeStore.loadingState() === LoadingState.Loaded) {
-<!-- TODO: Handle empty table -->
 <table
   mat-table
   [dataSource]="confermeStore.conferme()"
