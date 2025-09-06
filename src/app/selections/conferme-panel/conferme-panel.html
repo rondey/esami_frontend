@@ -1,0 +1,66 @@
+@if(confermeStore.isLoading()) {
+<div class="flex justify-center">
+  <mat-spinner></mat-spinner>
+</div>
+} @else{
+<table
+  mat-table
+  [dataSource]="confermeStore.conferme()"
+  matSort
+  (matSortChange)="onSortChange($event)"
+  [matSortActive]="confermeStore.filter().sortBy"
+  [matSortDirection]="confermeStore.filter().sortOrder"
+>
+  <ng-container matColumnDef="esameAmbulatorio.esame.descrizioneEsame">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Descrizione esame</th>
+    <td mat-cell *matCellDef="let conferma">
+      {{ conferma.esameAmbulatorio.esame.descrizioneEsame }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="esameAmbulatorio.esame.codiceMinisteriale">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Codice ministeriale</th>
+    <td mat-cell *matCellDef="let conferma">
+      {{ conferma.esameAmbulatorio.esame.codiceMinisteriale }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="esameAmbulatorio.esame.codiceInterno">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Codice interno</th>
+    <td mat-cell *matCellDef="let conferma">{{ conferma.esameAmbulatorio.esame.codiceInterno }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="esameAmbulatorio.esame.posizione.descrizionePosizione">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Descrizione posizione</th>
+    <td mat-cell *matCellDef="let conferma">
+      {{ conferma.esameAmbulatorio.esame.posizione.descrizionePosizione }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="esameAmbulatorio.ambulatorio.descrizioneAmbulatorio">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Descrizione ambulatorio</th>
+    <td mat-cell *matCellDef="let conferma">
+      {{ conferma.esameAmbulatorio.ambulatorio.descrizioneAmbulatorio }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="createdAt">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Data conferma</th>
+    <td mat-cell *matCellDef="let conferma">
+      {{ conferma.createdAt | date : 'dd/MM/yyyy HH:mm' }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef>Azioni</th>
+    <td mat-cell *matCellDef="let conferma">
+      <button mat-icon-button>
+        <mat-icon class="error" (click)="onDelete(conferma.id)">delete</mat-icon>
+      </button>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+</table>
+}

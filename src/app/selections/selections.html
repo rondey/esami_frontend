@@ -1,11 +1,14 @@
-<!-- TODO: Until the filters are not loaded, show a loading spinner -->
-
-<app-filters-panel [(filters)]="filters" [filtersResetted]="filtersResetted"></app-filters-panel>
 @if(!isLoading()){
+<app-filters-panel [(filters)]="filters" [filtersResetted]="filtersResetted"></app-filters-panel>
 <app-esami-panels
   [filters]="filters"
   [ambulatorioIdDefault]="ambulatorioId()"
   [posizioneIdDefault]="posizioneId()"
   [esameIdDefault]="esameId()"
 ></app-esami-panels>
+} @else {
+<div class="flex justify-center">
+  <mat-spinner></mat-spinner>
+</div>
 }
+<app-conferme-panel></app-conferme-panel>

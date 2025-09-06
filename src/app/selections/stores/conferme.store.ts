@@ -1,22 +1,21 @@
-import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
+import { patchState, signalStore, withHooks, withMethods, withState } from '@ngrx/signals';
 import { ConfermaInterface } from '../models/conferma-interface';
 import { ConfermeService } from '../services/conferme-service';
 import { inject } from '@angular/core';
 import { finalize } from 'rxjs';
 import { NotificationsService, NotificationType } from '../../services/notifications-service';
-
-export type SortOrderType = 'ASC' | 'DESC';
+import { SortDirection } from '@angular/material/sort';
 
 type ConfermeState = {
   conferme: ConfermaInterface[];
   isLoading: boolean;
-  filter: { sortBy: string; sortOrder: SortOrderType };
+  filter: { sortBy: string; sortOrder: SortDirection };
 };
 
 const initialState: ConfermeState = {
   conferme: [],
   isLoading: false,
-  filter: { sortBy: 'id', sortOrder: 'ASC' },
+  filter: { sortBy: '', sortOrder: '' },
 };
 
 export const ConfermeStore = signalStore(
@@ -28,11 +27,12 @@ export const ConfermeStore = signalStore(
       confermeService = inject(ConfermeService),
       notificationsService = inject(NotificationsService)
     ) => ({
-      updateSortBy(sortBy: string): void {
-        patchState(store, (state) => ({ filter: { ...state.filter, sortBy } }));
-      },
-      updateSortOrder(sortOrder: SortOrderType): void {
-        patchState(store, (state) => ({ filter: { ...state.filter, sortOrder } }));
+      updateSort(sortBy: string, sortOrder: SortDirection): void {
+        // Angular Material Table doesn't reset the active sort when the direction is resetted. Let's do it manually
+        if (sortOrder === '') sortBy = '';
+
+        patchState(store, (state) => ({ filter: { ...state.filter, sortBy, sortOrder } }));
+        this.getConferme();
       },
 
       async getConferme(): Promise<void> {
@@ -74,5 +74,10 @@ export const ConfermeStore = signalStore(
           });
       },
     })
-  )
+  ),
+  withHooks({
+    onInit(store) {
+      store.getConferme();
+    },
+  })
 );

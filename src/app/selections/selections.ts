@@ -6,10 +6,12 @@ import { PredefinitiFiltriService } from './services/predefiniti-filtri-service'
 import { PredefinitiFiltri } from './models/predefiniti-filtri';
 import { EsamiPanels } from './esami-panels/esami-panels';
 import { finalize } from 'rxjs';
+import { ConfermePanel } from './conferme-panel/conferme-panel';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-selections',
-  imports: [FiltersPanel, EsamiPanels],
+  imports: [FiltersPanel, EsamiPanels, ConfermePanel, MatProgressSpinnerModule],
   templateUrl: './selections.html',
   styleUrl: './selections.css',
 })

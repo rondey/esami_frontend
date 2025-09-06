@@ -38,7 +38,6 @@ enum Category {
   ],
   templateUrl: './esami-panels.html',
   styleUrl: './esami-panels.css',
-  providers: [ConfermeStore],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EsamiPanels {
