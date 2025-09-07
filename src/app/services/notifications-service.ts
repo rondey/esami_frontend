@@ -14,6 +14,7 @@ export enum NotificationType {
 export class NotificationsService {
   private readonly snackBar = inject(MatSnackBar);
 
+  // Get the emoji for the notification type
   private _getEmoji(type: NotificationType): string {
     switch (type) {
       case NotificationType.Success:

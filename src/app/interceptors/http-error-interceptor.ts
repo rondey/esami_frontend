@@ -11,7 +11,7 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
       let message = 'Si è verificato un errore, riprova più tardi.';
 
       if (error.status === 0) {
-        // Caso tipico di rete offline o server non raggiungibile
+        // When the user's network is offline or the server is not reachable
         message = `Errore di connessione. Controlla la tua rete. (${error.message})`;
       } else if (error.status >= 400 && error.status < 500) {
         const backendErrorMessage = error.error?.message;

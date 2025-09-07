@@ -75,7 +75,7 @@ export class EsamiPanels {
   // Necessary only for the template that needs the LoadingState type
   LoadingState = LoadingState;
 
-  // Utility for the get functions that drops the list and show the loading spinner
+  // Utility for the get functions that drops the list and show the relative loading spinner
   private resetAndShowLoading(category: Category) {
     switch (category) {
       case Category.Ambulatori:
@@ -119,11 +119,12 @@ export class EsamiPanels {
             });
             // KEEP NOTE: Don't need to launch the getPosizioni function, it will be called by the change event
           } else {
-            // Load/Reload the posizioni
+            // Load/Reload the posizioni manually.
             this.getPosizioni();
           }
         },
         error: (_) => {
+          // In case of error, the other lists will no more be loaded
           this.isPosizioniLoading.set(false);
           this.isEsamiLoading.set(false);
         },
@@ -136,8 +137,10 @@ export class EsamiPanels {
     this.resetAndShowLoading(Category.Posizioni);
     this.resetAndShowLoading(Category.Esami);
 
+    // Get the actual selected ambulatorioId of the form. Because in the form the value is an array (blame to the MatSelectionList), take the first one
     const ambulatorioId = this.esamiForm.value.ambulatorioId?.[0];
     if (!ambulatorioId) {
+      // In case no ambulatorioId is selected, the other lists will no more be loaded
       this.isPosizioniLoading.set(false);
       this.isEsamiLoading.set(false);
 
@@ -168,6 +171,7 @@ export class EsamiPanels {
           }
         },
         error: (_) => {
+          // In case of error, the esami list will no more be loaded
           this.isEsamiLoading.set(false);
         },
       });
@@ -178,10 +182,12 @@ export class EsamiPanels {
     // All the esami list must be dropped before the new one is loaded
     this.resetAndShowLoading(Category.Esami);
 
+    // Get the actual selected ambulatorioId and posizioneId of the form. Because in the form each value is an array (blame to the MatSelectionList), take the first one
     const ambulatorioId = this.esamiForm.value.ambulatorioId?.[0];
     const posizioneId = this.esamiForm.value.posizioneId?.[0];
 
     if (!ambulatorioId || !posizioneId) {
+      // In case no ambulatorioId or posizioneId is selected, the esami list will no more be loaded
       this.isEsamiLoading.set(false);
 
       return;
@@ -216,7 +222,7 @@ export class EsamiPanels {
     });
 
     this.esamiForm.controls.ambulatorioId.valueChanges.subscribe((_) => {
-      // The ambulatorioId control is not yet updated. Wait for it
+      // The ambulatorioId control is not yet updated. Wait for it, otherwise will be loaded the wrong posizioni list based on the previously selected ambulatorio
       setTimeout(() => {
         // Now that the ambulatorioId control is updated, reload the posizioni
         this.getPosizioni();
@@ -224,7 +230,7 @@ export class EsamiPanels {
     });
 
     this.esamiForm.controls.posizioneId.valueChanges.subscribe((_) => {
-      // The posizioneId control is not yet updated. Wait for it
+      // The posizioneId control is not yet updated. Wait for it, otherwise will be loaded the wrong esami list based on the previously selected posizione
       setTimeout(() => {
         // Now that the posizioneId control is updated, reload the esami
         this.getEsami();
@@ -244,6 +250,7 @@ export class EsamiPanels {
     }
   }
 
+  // Helper to check if a field list is invalid to show the red border. In case the user has not yet touched the field, the border should not yet be red
   isFieldInvalid(control: keyof typeof this.esamiForm.controls): boolean {
     const c = this.esamiForm.controls[control];
     return c.invalid && c.touched;

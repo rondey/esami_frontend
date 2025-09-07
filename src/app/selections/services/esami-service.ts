@@ -13,11 +13,13 @@ import { FieldFilterEnum } from '../models/field-filter-enum';
 export class EsamiService {
   http = inject(HttpClient);
 
+  // Based on the filters selected, prepare the params for the http request
   private prepareFiltersParams(filters: FiltersInterface) {
     if (filters.selectedField === FieldFilterEnum.nessuno) {
       return {};
     }
     return {
+      // Add a param where the key is the selected field and the value is the value field
       [filters.selectedField]: filters.valueField,
     };
   }

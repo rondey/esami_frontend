@@ -17,7 +17,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { FiltersInterface } from '../models/filters-interface';
 import { NotificationsService, NotificationType } from '../../services/notifications-service';
 
-// Cross validator
+// Cross validator: valueField is required if selectedField is not "nessuno"
 function selectedFieldValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
     const selectedField = control.get('selectedField')?.value;

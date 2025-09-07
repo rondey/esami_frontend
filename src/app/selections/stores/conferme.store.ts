@@ -49,7 +49,7 @@ export const ConfermeStore = signalStore(
           return;
         }
 
-        // Error recoverable made by the user. The conferme list should be visible
+        // Error recoverable that was made by the user. The conferme list should be visible
         patchState(store, { loadingState: LoadingState.Loaded });
       },
 
